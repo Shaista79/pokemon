@@ -1,25 +1,94 @@
-import logo from './logo.svg';
+import React, { useEffect, useState } from 'react';
+import { SearchBox } from './components/SearchBox';
+import Card from './components/Card';
 import './App.css';
+import Spinner from './components/Spinner';
 
-function App() {
+export default function App() {
+  const [pokemons,setPokeMon]=useState([]);
+  const [search,setSearch]=useState('');
+  const [loading,setLoading]=useState(true)
+
+
+  useEffect(()=>{
+    fetch('https://pokeapi.co/api/v2/pokemon?limit=500')
+    .then(response => response.json())
+    .then((name) => {
+      setLoading(false)
+      setPokeMon(name.results)
+    
+    })
+   
+   
+
+  },[])
+  const handleChange=(e) => {
+    setSearch(e.target.value);
+  };
+
+  const fileteredPokemons = pokemons.filter(pokemon => pokemon.name.toLowerCase().includes(search.toLowerCase()));
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    
+     <>
+    
+       
+       <SearchBox
+          placeholder='Search Pokemon' 
+          handleChange= {handleChange}
+
+        />
+         {loading && <Spinner/>}
+        {!loading && <Card pokemons={fileteredPokemons}></Card>}
+     </>
+  )
 }
 
-export default App;
+
+
+
+
+/*import React, {Component} from 'react';
+import { CardList } from './components/Card-list';
+import { SearchBox } from './components/SearchBox';
+import './App.css';
+
+class App extends Component{
+  constructor(){
+    super();
+  this.state = {
+      pokemons: [],
+      search:''
+    };
+  }
+
+
+  componentDidMount(){
+    fetch('https://pokeapi.co/api/v2/pokemon?limit=500')
+    .then(response => response.json())
+    .then(name => this.setState({pokemons:name.results}));
+  }
+
+  handleChange=(e) => {
+    this.setState({search: e.target.value});
+  };
+
+  render(){
+    const {pokemons, search } = this.state;
+    const fileteredPokemons = pokemons.filter(pokemon => pokemon.name.toLowerCase().includes(search.toLowerCase()));
+
+    return(
+      <div className="App">
+        <h4><a href="https://www.linkedin.com/in/surojit-manna" target="_blank" noreferrer>Author</a></h4>
+        <h1>Pokemon Database</h1>
+        <SearchBox
+          placeholder='Search Pokemon' 
+          handleChange= {this.handleChange}
+        />
+        <CardList pokemons={fileteredPokemons}></CardList>
+
+      </div>
+    );
+  }
+}
+
+export default App;*/
